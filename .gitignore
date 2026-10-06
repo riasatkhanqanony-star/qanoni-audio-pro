@@ -1,0 +1,9 @@
+node_modules
+.next
+.env
+.env.local
+.vercel
+prisma/*.db
+public/uploads
+npm-debug.log*
+.env*.local

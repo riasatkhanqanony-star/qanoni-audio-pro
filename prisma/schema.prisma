@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  songs     Song[]
+
+  @@index([name])
+}
+
+model Song {
+  id          String   @id @default(cuid())
+  title       String
+  artist      String   @default("Qanoni Audio")
+  description String?
+  coverUrl    String
+  audioUrl    String
+  duration    Int      @default(0)
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  isFeatured  Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  likes       Int      @default(0)
+  plays       Int      @default(0)
+  downloads   Int      @default(0)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, isFeatured, createdAt])
+  @@index([categoryId])
+  @@index([title])
+  @@index([plays])
+  @@index([likes])
+}
+
+model SiteSettings {
+  id              Int      @id @default(1)
+  appName         String   @default("Qanoni Audio")
+  tagline         String   @default("Your sound. Your style.")
+  heroEyebrow     String   @default("Premium audio library")
+  heroTitle       String   @default("Sound that feels like yours.")
+  heroDescription String   @default("Discover polished ringtones and short audio moments. Play instantly, save favorites, and explore a catalog curated for everyday listening.")
+  heroButtonText  String   @default("Explore library")
+  featuredTitle   String   @default("Featured for you")
+  latestTitle     String   @default("Latest drops")
+  footerText      String   @default("Qanoni Audio — a modern audio catalog platform.")
+  accentColor     String   @default("#ff5a1f")
+  allowDownloads  Boolean  @default(true)
+  showFeatured    Boolean  @default(true)
+  showLatest      Boolean  @default(true)
+  showCategories  Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}

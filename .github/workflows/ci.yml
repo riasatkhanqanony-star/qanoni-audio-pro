@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanoni_audio
+      AUTH_SECRET: ci-only-secret
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD_HASH: $2b$12$3K4j0G0mY9Q0g6V5F2QW5O6R9s6y8B2vF5N9v0b3x7L1k2m3n4o5p
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install --no-audit --no-fund
+      - run: npm run lint
+      - run: npm run db:generate
