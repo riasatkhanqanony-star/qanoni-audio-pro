@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { unexpectedApiError } from '@/lib/api';
 
 export const runtime = 'nodejs';
 
@@ -44,6 +43,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(songs, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
-    return unexpectedApiError(error, 'Public songs error');
+    console.error('Public songs error:', error);
+    return NextResponse.json({ error: 'Audio catalog is temporarily unavailable.' }, { status: 503 });
   }
 }
